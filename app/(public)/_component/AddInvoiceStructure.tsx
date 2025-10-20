@@ -22,22 +22,27 @@ import { cn } from "@/lib/utils";
 import {
   invoiceSchema,
   invoiceSchemaType,
+  paidStatus,
   serviceList,
 } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { PriceInput } from "./PriceInput";
-import { formatRupiah } from "@/lib/formatValue";
+import { Textarea } from "@/components/ui/textarea";
 
 export function AddInvoiceStructure() {
   const form = useForm<invoiceSchemaType>({
+    // @ts-expect-error schema coercion type
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
-      invoiceNumber: "",
-      serviceBy: "",
-      serviceDate: undefined,
-      lines: [{ serviceType: "Aki / Baterai", value: 0 }],
+      serviceDate: new Date(),
+      driverName: "",
+      odometerKm: 0,
+      // lines: [{ serviceType: "Aki / Baterai", value: 0 }],
+      lines: [{ serviceType: "Aki / Baterai", keteranganItem: "" }],
+      status: "Unpaid",
+      locationService: "",
+      notes: "",
     },
   });
 
@@ -54,7 +59,7 @@ export function AddInvoiceStructure() {
         l.serviceType === "Pilih Lainnya"
           ? l.customService?.trim() || "Lainnya"
           : l.serviceType;
-      return `${name} ${formatRupiah(l.value)} ${data.serviceDate}`;
+      return `${name} ${l.keteranganItem} ${data.serviceDate}`;
     });
     console.log(lines);
   }
@@ -62,9 +67,16 @@ export function AddInvoiceStructure() {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-            <FormField
+        <form
+          onSubmit={
+            // @ts-expect-error schema coercion type
+            form.handleSubmit(onSubmit)
+          }
+          className="space-y-8"
+        >
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            {/* <FormField
+              // @ts-expect-error schema coercion type
               control={form.control}
               name="invoiceNumber"
               render={({ field }) => (
@@ -76,14 +88,60 @@ export function AddInvoiceStructure() {
                   <FormMessage />
                 </FormItem>
               )}
+            /> */}
+
+            <FormField
+              // @ts-expect-error schema coercion type
+              control={form.control}
+              name="locationService"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama Tempat Service</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Bengkel..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
             <FormField
+              // @ts-expect-error schema coercion type
               control={form.control}
-              name="serviceBy"
+              name="serviceDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Di Service Oleh</FormLabel>
+                  <FormLabel>Tanggal Service</FormLabel>
+                  <FormControl>
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* <FormField
+              // @ts-expect-error schema coercion type
+              control={form.control}
+              name="picName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama PIC Service</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+
+            <FormField
+              // @ts-expect-error schema coercion type
+              control={form.control}
+              name="driverName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama Driver</FormLabel>
                   <FormControl>
                     <Input placeholder="John Doe" {...field} />
                   </FormControl>
@@ -93,13 +151,14 @@ export function AddInvoiceStructure() {
             />
 
             <FormField
+              // @ts-expect-error schema coercion type
               control={form.control}
-              name="serviceDate"
+              name="odometerKm"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tanggal Service</FormLabel>
+                  <FormLabel>Kilometer Truck (km)</FormLabel>
                   <FormControl>
-                    <DatePicker value={field.value} onChange={field.onChange} />
+                    <Input type="number" placeholder="123456" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,14 +180,16 @@ export function AddInvoiceStructure() {
                 <div
                   key={item.id}
                   className={cn(
-                    "grid items-end gap-3 w-full",
+                    "grid w-full gap-3 rounded-md border border-border p-3",
+                    // sm: stack (1 kolom), md+: horizontal
                     isCustom
-                      ? "grid-cols-[auto_1fr_2fr_auto]"
-                      : "grid-cols-[auto_2fr_auto]"
+                      ? "md:grid-cols-[auto_1fr_2fr_auto]" // Select | Custom | Keterangan | Delete
+                      : "md:grid-cols-[auto_2fr_auto]" // Select | Keterangan | Delete
                   )}
                 >
                   {/* ----- 1.  selector (always visible) ----- */}
                   <FormField
+                    // @ts-expect-error schema coercion type
                     control={form.control}
                     name={`lines.${idx}.serviceType`}
                     render={({ field }) => (
@@ -159,49 +220,117 @@ export function AddInvoiceStructure() {
                   {/* ----- 2.  extra name field (only for "Pilih Lainnya") ----- */}
                   {isCustom && (
                     <FormField
+                      // @ts-expect-error schema coercion type
                       control={form.control}
                       name={`lines.${idx}.customService`}
                       render={({ field }) => (
-                        <Input placeholder="New service name" {...field} />
+                        <>
+                          <Input placeholder="New service name" {...field} />
+                          <FormMessage />
+                        </>
                       )}
                     />
                   )}
 
-                  {/* ----- 3.  price / value ----- */}
-                  <FormField
-                    control={form.control}
-                    name={`lines.${idx}.value`}
-                    render={({ field }) => (
-                      <PriceInput
-                        value={field.value}
-                        onChange={field.onChange}
-                        placeholder="Rp 0"
-                      />
-                    )}
-                  />
+                  <div className="flex gap-2 w-full items-center">
+                    {/* ----- 3.  price / value ----- */}
+                    <FormField
+                      // @ts-expect-error schema coercion type
+                      control={form.control}
+                      name={`lines.${idx}.keteranganItem`}
+                      render={({ field }) => (
+                        <>
+                          <Textarea
+                            placeholder="Keterangan item service..."
+                            {...field}
+                          />
+                          <FormMessage />
+                        </>
+                      )}
+                    />
 
-                  {/* ----- 4.  delete ----- */}
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => remove(idx)}
-                    disabled={fields.length === 1}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
+                    {/* ----- 4.  delete ----- */}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => remove(idx)}
+                      disabled={fields.length === 1}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
                 </div>
               );
             })}
             <Button
-              className="mb-6"
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => append({ serviceType: serviceList[0], value: 0 })}
+              onClick={() =>
+                append({ serviceType: serviceList[0], keteranganItem: "" })
+              }
             >
               <Plus className="mr-2 h-4 w-4" /> Tambah Baris
             </Button>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2">
+            <FormField
+              // @ts-expect-error schema coercion type
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status Pembayaran</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Pilih Status Pembayaran" />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent>
+                      {paidStatus.map((ps) => (
+                        <SelectItem key={ps} value={ps}>
+                          {ps}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              // @ts-expect-error schema coercion type
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notes</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Notes tambahan..."
+                      className="min-h-[120px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* <div className="text-right leading-tight mt-8">
+              <p className="text-muted-foreground text-sm">Grand Total</p>
+              <p className="text-green-700 dark:text-green-300 text-2xl">
+                Rp. xxxx
+              </p>
+            </div> */}
           </div>
 
           <Button type="submit" className="w-full">

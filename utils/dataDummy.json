@@ -1,0 +1,109 @@
+[
+  {
+    "invoiceNumber": "INV-27001",
+    "serviceDate": "2025-10-21",
+    "driverName": "Budi Santoso",
+    "odometerKm": 125000,
+    "locationService": "Bengkel Sejahtera Jakarta",
+    "lines": [
+      {
+        "serviceType": "Oli Mesin + Filter Oli",
+        "keteranganItem": "Ganti Oli Total 10W-40 + filter Honda Original"
+      },
+      {
+        "serviceType": "Filter Udara",
+        "keteranganItem": "Filter udara kotor, langsung ganti baru"
+      }
+    ],
+    "status": "Paid",
+    "notes": "Lunas tunai via QRIS"
+  },
+  {
+    "invoiceNumber": "INV-27002",
+    "serviceDate": "2025-10-22",
+    "driverName": "Siti Nurhaliza",
+    "odometerKm": 87000,
+    "locationService": "Fast Track Garage Bekasi",
+    "lines": [
+      {
+        "serviceType": "Aki / Baterai",
+        "keteranganItem": "Aki NS60L 12V 45Ah – tipe kering"
+      }
+    ],
+    "status": "Paid Partially",
+    "notes": "DP 500 rb, sisanya minggu depan"
+  },
+  {
+    "invoiceNumber": "INV-27003",
+    "serviceDate": "2025-10-23",
+    "driverName": "Dadan Hermawan",
+    "odometerKm": 102400,
+    "locationService": "AutoCare Klaten",
+    "lines": [
+      {
+        "serviceType": "Pilih Lainnya",
+        "customService": "Tune-up & Throttle Body Cleaning",
+        "keteranganItem": "Bersihkan karbon, reset ECU, test drive 15 km"
+      },
+      {
+        "serviceType": "Filter Solar (Fuel Filter)",
+        "keteranganItem": "Filter solar bocor, ganti aftermarket"
+      }
+    ],
+    "status": "Unpaid",
+    "notes": "Menunggu approval finance"
+  },
+  {
+    "invoiceNumber": "INV-27004",
+    "serviceDate": "2025-10-24",
+    "driverName": "Rizki Ramadhan",
+    "odometerKm": 156700,
+    "locationService": "Bengkel Jaya Mandiri Tangerang",
+    "lines": [
+      {
+        "serviceType": "Kampas Rem (Brake Lining)",
+        "keteranganItem": "Kampas depan & belakang – Akebono"
+      },
+      {
+        "serviceType": "Minyak Rem",
+        "keteranganItem": "Ganti DOT4 1 liter – bleeding sistem"
+      }
+    ],
+    "status": "Paid",
+    "notes": "Bayar tunai"
+  },
+  {
+    "invoiceNumber": "INV-27005",
+    "serviceDate": "2025-10-25",
+    "driverName": "Yudi Kurniawan",
+    "odometerKm": 48200,
+    "locationService": "Sentosa Service Yogyakarta",
+    "lines": [
+      {
+        "serviceType": "Servis Lengkap (General Check-Up)",
+        "keteranganItem": "Cek 50 poin, scan diagnostic, cetak report"
+      }
+    ],
+    "status": "Paid Partially",
+    "notes": "Sisa transfer besok"
+  },
+  {
+    "invoiceNumber": "INV-27006",
+    "serviceDate": "2025-10-26",
+    "driverName": "Agus Salim",
+    "odometerKm": 63800,
+    "locationService": "Makmur Abadi Bandung",
+    "lines": [
+      {
+        "serviceType": "Radiator & Coolant",
+        "keteranganItem": "Flush radiator, ganti coolant merk Toyota"
+      },
+      {
+        "serviceType": "Ban (Tekanan & Rotasi)",
+        "keteranganItem": "Rotasi ban + balancing, tekanan 32 psi"
+      }
+    ],
+    "status": "Unpaid",
+    "notes": "Belum ada dana operasional"
+  }
+]

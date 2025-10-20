@@ -2,6 +2,7 @@ import { ModeToggle } from "@/components/ModeToggle";
 import { plusJakarta } from "../../layout";
 import Image from "next/image";
 import Link from "next/link";
+import { Bell } from "lucide-react";
 
 export default function NavbarComponent() {
   return (
@@ -17,10 +18,12 @@ export default function NavbarComponent() {
           </div>
         </Link>
 
-        <div className="flex items-center gap-2 justify-between">
+        <div className="flex items-center gap-6 justify-evenly">
           <ModeToggle />
-          <p>Notif</p>
-          <p>gk tau apa lagi</p>
+          <div className="flex items-center gap-2">
+            <Bell />
+            <p>gk tau apa lagi</p>
+          </div>
         </div>
       </div>
     </header>

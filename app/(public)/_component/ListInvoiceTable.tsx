@@ -1,4 +1,4 @@
-// app/monitoring/page.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useMemo, useState } from "react";
@@ -9,7 +9,6 @@ import {
   Search,
   RotateCcw,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,332 +27,92 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDateID, formatRupiah } from "@/lib/formatValue";
 import { cn } from "@/lib/utils";
+import { PublicInvoiceType } from "@/app/data/get-invoices-data";
 
-type ServiceItem = {
-  nama: string;
-  qty: number;
-  harga_satuan: number;
-  subtotal: number;
-};
-
-type ServiceRecord = {
-  invoice: string;
-  nama_petugas: string;
-  status: "selesai" | "proses" | "terjadwal" | "dibatalkan";
-  tanggal_service: string; // YYYY-MM-DD
-  total_harga: number;
-  total_harga_formatted: string;
-  items: ServiceItem[];
-};
-
-type SortKey = "invoice" | "tanggal_service" | "total_harga";
-type SortDir = "asc" | "desc";
-
-const DATA: ServiceRecord[] = [
-  {
-    invoice: "INV-TRK-2025-001",
-    nama_petugas: "Budi Santoso",
-    status: "selesai",
-    tanggal_service: "2025-01-15",
-    total_harga: 1300000,
-    total_harga_formatted: "Rp 1.300.000",
-    items: [
-      {
-        nama: "Oli Mesin + Filter Oli",
-        qty: 1,
-        harga_satuan: 650000,
-        subtotal: 650000,
-      },
-      { nama: "Filter Udara", qty: 1, harga_satuan: 180000, subtotal: 180000 },
-      {
-        nama: "Filter Solar (Fuel Filter)",
-        qty: 1,
-        harga_satuan: 220000,
-        subtotal: 220000,
-      },
-      {
-        nama: "Servis Lengkap (General Check-Up) - Jasa",
-        qty: 1,
-        harga_satuan: 250000,
-        subtotal: 250000,
-      },
-    ],
-  },
-  {
-    invoice: "INV-TRK-2025-002",
-    nama_petugas: "Siti Aminah",
-    status: "selesai",
-    tanggal_service: "2025-02-12",
-    total_harga: 1120000,
-    total_harga_formatted: "Rp 1.120.000",
-    items: [
-      {
-        nama: "Kampas Rem (Brake Lining)",
-        qty: 2,
-        harga_satuan: 275000,
-        subtotal: 550000,
-      },
-      { nama: "Minyak Rem", qty: 2, harga_satuan: 75000, subtotal: 150000 },
-      {
-        nama: "Pelumas Bearing Roda",
-        qty: 1,
-        harga_satuan: 120000,
-        subtotal: 120000,
-      },
-      {
-        nama: "Jasa Pengerjaan Rem",
-        qty: 1,
-        harga_satuan: 300000,
-        subtotal: 300000,
-      },
-    ],
-  },
-  {
-    invoice: "INV-TRK-2025-003",
-    nama_petugas: "Andi Wijaya",
-    status: "selesai",
-    tanggal_service: "2025-03-20",
-    total_harga: 3850000,
-    total_harga_formatted: "Rp 3.850.000",
-    items: [
-      {
-        nama: "Kopling (Clutch Disc & Cover)",
-        qty: 1,
-        harga_satuan: 2750000,
-        subtotal: 2750000,
-      },
-      {
-        nama: "Oli Transmisi & Gardan",
-        qty: 1,
-        harga_satuan: 450000,
-        subtotal: 450000,
-      },
-      {
-        nama: "Jasa Penggantian Kopling",
-        qty: 1,
-        harga_satuan: 650000,
-        subtotal: 650000,
-      },
-    ],
-  },
-  {
-    invoice: "INV-TRK-2025-004",
-    nama_petugas: "Rina Kusuma",
-    status: "selesai",
-    tanggal_service: "2025-04-18",
-    total_harga: 800000,
-    total_harga_formatted: "Rp 800.000",
-    items: [
-      {
-        nama: "Radiator & Coolant (Flush + Isi Ulang)",
-        qty: 1,
-        harga_satuan: 350000,
-        subtotal: 350000,
-      },
-      {
-        nama: "Filter Kabin / AC",
-        qty: 1,
-        harga_satuan: 150000,
-        subtotal: 150000,
-      },
-      {
-        nama: "Lampu, Klakson, & Kelistrikan (Cek)",
-        qty: 1,
-        harga_satuan: 100000,
-        subtotal: 100000,
-      },
-      {
-        nama: "Jasa Servis Ringan",
-        qty: 1,
-        harga_satuan: 200000,
-        subtotal: 200000,
-      },
-    ],
-  },
-  {
-    invoice: "INV-TRK-2025-005",
-    nama_petugas: "Dedi Pratama",
-    status: "selesai",
-    tanggal_service: "2025-05-22",
-    total_harga: 620000,
-    total_harga_formatted: "Rp 620.000",
-    items: [
-      {
-        nama: "Ban (Tekanan & Rotasi)",
-        qty: 1,
-        harga_satuan: 240000,
-        subtotal: 240000,
-      },
-      {
-        nama: "Suspensi & As Roda (Cek)",
-        qty: 1,
-        harga_satuan: 180000,
-        subtotal: 180000,
-      },
-      {
-        nama: "Aki / Baterai (Tes Beban)",
-        qty: 1,
-        harga_satuan: 50000,
-        subtotal: 50000,
-      },
-      {
-        nama: "Jasa Pengecekan",
-        qty: 1,
-        harga_satuan: 150000,
-        subtotal: 150000,
-      },
-    ],
-  },
-  {
-    invoice: "INV-TRK-2025-006",
-    nama_petugas: "Bima Saputra",
-    status: "proses",
-    tanggal_service: "2025-06-17",
-    total_harga: 480000,
-    total_harga_formatted: "Rp 480.000",
-    items: [
-      {
-        nama: "Pelumas Power Steering / Hidrolik",
-        qty: 1,
-        harga_satuan: 160000,
-        subtotal: 160000,
-      },
-      {
-        nama: "Pelumas Bearing Roda",
-        qty: 1,
-        harga_satuan: 120000,
-        subtotal: 120000,
-      },
-      {
-        nama: "Jasa Penggantian Fluida",
-        qty: 1,
-        harga_satuan: 200000,
-        subtotal: 200000,
-      },
-    ],
-  },
-  {
-    invoice: "INV-TRK-2025-007",
-    nama_petugas: "Sari Lestari",
-    status: "terjadwal",
-    tanggal_service: "2025-07-10",
-    total_harga: 3000000,
-    total_harga_formatted: "Rp 3.000.000",
-    items: [
-      {
-        nama: "Servis Lengkap (General Check-Up)",
-        qty: 1,
-        harga_satuan: 600000,
-        subtotal: 600000,
-      },
-      {
-        nama: "Oli Mesin + Filter Oli",
-        qty: 1,
-        harga_satuan: 650000,
-        subtotal: 650000,
-      },
-      { nama: "Filter Udara", qty: 1, harga_satuan: 180000, subtotal: 180000 },
-      {
-        nama: "Filter Solar (Fuel Filter)",
-        qty: 1,
-        harga_satuan: 220000,
-        subtotal: 220000,
-      },
-      {
-        nama: "Oli Transmisi & Gardan",
-        qty: 1,
-        harga_satuan: 450000,
-        subtotal: 450000,
-      },
-      {
-        nama: "Radiator & Coolant",
-        qty: 1,
-        harga_satuan: 350000,
-        subtotal: 350000,
-      },
-      { nama: "Minyak Rem", qty: 1, harga_satuan: 150000, subtotal: 150000 },
-      { nama: "Jasa Tambahan", qty: 1, harga_satuan: 400000, subtotal: 400000 },
-    ],
-  },
-  {
-    invoice: "INV-TRK-2025-008",
-    nama_petugas: "Tono Hidayat",
-    status: "dibatalkan",
-    tanggal_service: "2025-08-05",
-    total_harga: 770000,
-    total_harga_formatted: "Rp 770.000",
-    items: [
-      {
-        nama: "Lampu, Klakson, & Kelistrikan (Penggantian Lampu)",
-        qty: 2,
-        harga_satuan: 120000,
-        subtotal: 240000,
-      },
-      {
-        nama: "Klakson (Unit Baru)",
-        qty: 1,
-        harga_satuan: 180000,
-        subtotal: 180000,
-      },
-      {
-        nama: "Diagnosa Kelistrikan",
-        qty: 1,
-        harga_satuan: 150000,
-        subtotal: 150000,
-      },
-      {
-        nama: "Jasa Pemasangan",
-        qty: 1,
-        harga_satuan: 200000,
-        subtotal: 200000,
-      },
-    ],
-  },
-];
-
-function statusBadgeClass(s: ServiceRecord["status"]) {
-  // Kenapa: visual status jelas di theme apa pun.
-  if (s === "selesai")
-    return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300";
-  if (s === "proses")
-    return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300";
-  if (s === "terjadwal")
-    return "bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300";
-  return "bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300";
+interface iAppProps {
+  data: PublicInvoiceType[];
 }
 
-export default function ListInvoiceTable() {
+type SortKey = "invoice" | "tanggal_service";
+type SortDir = "asc" | "desc";
+
+function toYMD(d: string | Date | undefined | null): string {
+  if (!d) return "";
+  if (typeof d === "string") {
+    // Kalo string ISO "2025-10-21T..." → ambil 10
+    return d.length >= 10 ? d.slice(0, 10) : d;
+  }
+  if (d instanceof Date) {
+    return d.toISOString().slice(0, 10);
+  }
+  return "";
+}
+
+export function statusBadgeClass(status: string) {
+  switch (status) {
+    case "Paid":
+      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200";
+    case "Paid Partially":
+      return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200";
+    default: // Unpaid
+      return "bg-slate-200 text-slate-900 dark:bg-slate-700/60 dark:text-slate-100";
+  }
+}
+
+export function statusDotClass(status: string) {
+  switch (status) {
+    case "Paid":
+      return "bg-emerald-500";
+    case "Paid Partially":
+      return "bg-amber-500";
+    default: // Unpaid
+      return "bg-slate-500"; // ← tetap kelihatan di dua tema
+  }
+}
+
+export default function ListInvoiceTable({ data }: iAppProps) {
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<"" | ServiceRecord["status"]>("");
+  const [status, setStatus] = useState<string>("");
   const [sortKey, setSortKey] = useState<SortKey>("tanggal_service");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
+  const statusOptions = useMemo(() => {
+    const set = new Set<string>();
+    (data ?? []).forEach((r) => r.status && set.add(r.status));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [data]);
+
   const filteredSorted = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let rows = DATA.filter((r) => {
-      const matchesQ =
+
+    const rows = (data ?? []).filter((row) => {
+      const matchesQuery =
         !q ||
-        r.invoice.toLowerCase().includes(q) ||
-        r.nama_petugas.toLowerCase().includes(q);
-      const matchesStatus = !status || r.status === status;
-      return matchesQ && matchesStatus;
+        (row.driverName ?? "").toLowerCase().includes(q) ||
+        (row.status ?? "").toLowerCase().includes(q) ||
+        (row.invoiceNumber ?? "").toLowerCase().includes(q);
+
+      const matchesStatus = !status || row.status === status;
+      return matchesQuery && matchesStatus;
     });
 
     rows.sort((a, b) => {
       const dir = sortDir === "asc" ? 1 : -1;
+
       if (sortKey === "invoice")
-        return a.invoice.localeCompare(b.invoice) * dir;
+        return (
+          (a.invoiceNumber ?? "").localeCompare(b.invoiceNumber ?? "") * dir
+        );
+
       if (sortKey === "tanggal_service")
-        return a.tanggal_service.localeCompare(b.tanggal_service) * dir;
-      if (sortKey === "total_harga")
-        return (a.total_harga - b.total_harga) * dir;
+        return toYMD(a.serviceDate).localeCompare(toYMD(b.serviceDate)) * dir;
+
       return 0;
     });
 
     return rows;
-  }, [query, status, sortKey, sortDir]);
+  }, [data, query, status, sortKey, sortDir]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -385,10 +144,11 @@ export default function ListInvoiceTable() {
               <SelectValue placeholder="Pilih Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="selesai">Selesai</SelectItem>
-              <SelectItem value="proses">Proses</SelectItem>
-              <SelectItem value="terjadwal">Terjadwal</SelectItem>
-              <SelectItem value="dibatalkan">Dibatalkan</SelectItem>
+              {statusOptions.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {status}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -436,14 +196,14 @@ export default function ListInvoiceTable() {
               >
                 Tanggal Service
               </ThSort>
-              <ThSort
+              {/* <ThSort
                 active={sortKey === "total_harga"}
                 dir={sortKey === "total_harga" ? sortDir : undefined}
                 onClick={() => toggleSort("total_harga")}
                 className="hidden md:table-cell"
               >
                 Total Harga
-              </ThSort>
+              </ThSort> */}
               <TableHead className="hidden md:table-cell">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -460,40 +220,38 @@ export default function ListInvoiceTable() {
               </TableRow>
             ) : (
               filteredSorted.map((r) => (
-                <TableRow key={r.invoice} className="hover:bg-muted/30">
-                  <TableCell className="font-mono">{r.invoice}</TableCell>
-                  <TableCell>{r.nama_petugas}</TableCell>
+                <TableRow key={r.invoiceNumber} className="hover:bg-muted/30">
+                  <TableCell className="font-mono">{r.invoiceNumber}</TableCell>
+                  <TableCell>{r.driverName}</TableCell>
                   <TableCell>
-                    <div
-                      className={cn(
-                        "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium",
-                        statusBadgeClass(r.status) // border + text colour (theme aware)
-                      )}
-                    >
-                      {/* 100 % colour dot – never changes */}
+                    <div>
                       <span
                         className={cn(
-                          "h-2 w-2 rounded-full",
-                          r.status === "selesai" && "bg-emerald-500",
-                          r.status === "proses" && "bg-amber-500",
-                          r.status === "terjadwal" && "bg-sky-500",
-                          r.status === "dibatalkan" && "bg-rose-500"
+                          "inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium",
+                          statusBadgeClass(r.status)
                         )}
-                      />
-                      <span>{r.status}</span>
+                      >
+                        <span
+                          className={cn(
+                            "h-2 w-2 rounded-full",
+                            statusDotClass(r.status)
+                          )}
+                        />
+                        {r.status}
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell>{formatDateID(r.tanggal_service)}</TableCell>
-                  <TableCell className="hidden md:table-cell font-medium">
+                  <TableCell>{toYMD(r.serviceDate)}</TableCell>
+                  {/* <TableCell className="hidden md:table-cell font-medium">
                     {formatRupiah(r.total_harga)}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="hidden md:table-cell">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() =>
                         alert(
-                          `Invoice ${r.invoice} — buka halaman detail di sini`
+                          `Invoice ${r.invoiceNumber} — buka halaman detail di sini`
                         )
                       }
                     >

@@ -1,4 +1,3 @@
-"use client";
 import { CardStats } from "@/components/CardStats";
 import {
   Card,
@@ -13,8 +12,12 @@ import { Tabs } from "@radix-ui/react-tabs";
 import { AddInvoiceStructure } from "./_component/AddInvoiceStructure";
 import ListInvoiceTable from "./_component/ListInvoiceTable";
 import ListOverdueTable from "./_component/ListOverdueTable";
+import { fetchAllInvoices } from "./actions";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const allInvoices = await fetchAllInvoices();
+  console.log("data", allInvoices);
+
   const tabs = [
     { value: "add-invoice", label: "Input Invoice" },
     { value: "list-invoice", label: "List Invoice" },
@@ -82,7 +85,7 @@ export default function HomePage() {
                 <CardDescription></CardDescription>
               </CardHeader>
               <CardContent>
-                <ListInvoiceTable />
+                <ListInvoiceTable data={allInvoices} />
               </CardContent>
             </Card>
           </TabsContent>

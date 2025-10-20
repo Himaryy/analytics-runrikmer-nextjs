@@ -20,23 +20,27 @@ export const serviceList = [
   "Pilih Lainnya",
 ] as const;
 
+export const paidStatus = ["Paid", "Paid Partially", "Unpaid"];
+
 export const lineSchema = z.object({
-  serviceType: z.string().min(1), // accept any non-empty string
-  value: z.number().min(0, "Min 0"),
+  serviceType: z.string().min(1, { message: "Tidak Boleh Kosong" }), // accept any non-empty string
+  // value: z.number().min(0, "Min 0"),
+  keteranganItem: z
+    .string()
+    .min(1, { message: "Keterangan tidak boleh kosong" }),
   customService: z.string().optional(),
 });
 
 export const invoiceSchema = z.object({
-  invoiceNumber: z
-    .string()
-    .min(3, { message: "Invoice minimal 3 karakter" })
-    .max(100, { message: "Invoice maksimal 100 karakter" }),
+  invoiceNumber: z.string().min(1, { message: "Tidak boleh kosong" }),
   serviceDate: z.date({ message: "Tanggal service wajib dipilih" }),
-  serviceBy: z
-    .string()
-    .min(3, { message: "Nama minimal 3 karakter" })
-    .max(50, { message: "Nama maksimal 50 karakter" }),
+  driverName: z.string().min(3, { message: "Nama driver minimal 3 karakter" }),
+  odometerKm: z.coerce.number().min(1, { message: "Tidak boleh 0 / kosong" }),
+  locationService: z.string().min(3, { message: "Minimal 3 karakter" }),
   lines: z.array(lineSchema).min(1, "Minimal 1 jenis service"),
+
+  status: z.enum(paidStatus, { message: "Status wajib dipilih" }),
+  notes: z.string().optional(),
 });
 
 export type invoiceSchemaType = z.infer<typeof invoiceSchema>;
