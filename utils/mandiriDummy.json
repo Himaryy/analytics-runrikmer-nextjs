@@ -1,0 +1,142 @@
+[
+  {
+    "driverName": "John Doe",
+    "lines": [
+      {
+        "serviceType": "Oli Mesin + Filter Oli",
+        "keteranganItem": "Ganti oli 7L, filter oli baru",
+        "customService": ""
+      },
+      {
+        "serviceType": "Pilih Lainnya",
+        "customService": "Cek Rem",
+        "keteranganItem": "Kampas mulai tipis"
+      }
+    ],
+    "status": "OK",
+    "notes": "Unit siap jalan."
+  },
+  {
+    "driverName": "Rahmat Hidayat",
+    "lines": [
+      {
+        "serviceType": "Oli Mesin + Filter Oli",
+        "keteranganItem": "Top up 1L",
+        "customService": ""
+      }
+    ],
+    "status": "OK",
+    "notes": "Tidak ada kendala."
+  },
+  {
+    "driverName": "Siti Aminah",
+    "lines": [
+      {
+        "serviceType": "Pilih Lainnya",
+        "customService": "Cek Aki",
+        "keteranganItem": "Tegangan rendah, perlu pantau"
+      },
+      {
+        "serviceType": "Oli Mesin + Filter Oli",
+        "keteranganItem": "Viscositas normal",
+        "customService": ""
+      }
+    ],
+    "status": "ISSUE",
+    "notes": "Aki perlu pengecekan lanjut."
+  },
+  {
+    "driverName": "Budi Santoso",
+    "lines": [
+      {
+        "serviceType": "Oli Mesin + Filter Oli",
+        "keteranganItem": "Ganti filter oli",
+        "customService": ""
+      }
+    ],
+    "status": "OK",
+    "notes": ""
+  },
+  {
+    "driverName": "Agus Salim",
+    "lines": [
+      {
+        "serviceType": "Pilih Lainnya",
+        "customService": "Cek Rem",
+        "keteranganItem": "Rem belakang bunyi berdecit"
+      }
+    ],
+    "status": "ISSUE",
+    "notes": "Jadwalkan servis rem."
+  },
+  {
+    "driverName": "Dewi Lestari",
+    "lines": [
+      {
+        "serviceType": "Oli Mesin + Filter Oli",
+        "keteranganItem": "Ganti oli full + filter",
+        "customService": ""
+      },
+      {
+        "serviceType": "Pilih Lainnya",
+        "customService": "Cek Ban",
+        "keteranganItem": "Tekanan ban kiri depan kurang"
+      }
+    ],
+    "status": "ISSUE",
+    "notes": "Isi angin sebelum keberangkatan."
+  },
+  {
+    "driverName": "Ardi Pratama",
+    "lines": [
+      {
+        "serviceType": "Oli Mesin + Filter Oli",
+        "keteranganItem": "Interval berjalan 4.500 km",
+        "customService": ""
+      }
+    ],
+    "status": "OK",
+    "notes": "Lanjut gunakan."
+  },
+  {
+    "driverName": "Nina Putri",
+    "lines": [
+      {
+        "serviceType": "Pilih Lainnya",
+        "customService": "Cek Wiper",
+        "keteranganItem": "Karet aus, perlu ganti"
+      }
+    ],
+    "status": "ISSUE",
+    "notes": "Penggantian wiper direkomendasikan."
+  },
+  {
+    "driverName": "Yusuf Maulana",
+    "lines": [
+      {
+        "serviceType": "Oli Mesin + Filter Oli",
+        "keteranganItem": "Cek level & kebocoran: aman",
+        "customService": ""
+      }
+    ],
+    "status": "OK",
+    "notes": ""
+  },
+  {
+    "driverName": "Rina Kartika",
+    "lines": [
+      {
+        "serviceType": "Pilih Lainnya",
+        "customService": "Cek AC",
+        "keteranganItem": "Kurang dingin, cek freon"
+      },
+      {
+        "serviceType": "Oli Mesin + Filter Oli",
+        "keteranganItem": "Tidak perlu ganti saat ini",
+        "customService": ""
+      }
+    ],
+    "status": "ISSUE",
+    "notes": "Jadwalkan pengecekan AC."
+  }
+]

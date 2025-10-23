@@ -2,13 +2,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  ArrowUpDown,
-  ArrowUp,
-  ArrowDown,
-  Search,
-  RotateCcw,
-} from "lucide-react";
+import { Search, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,13 +23,11 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { PublicInvoiceType } from "@/app/data/get-invoices-data";
+import { SortDir, SortKey, ThSort } from "@/components/sortTable";
 
 interface iAppProps {
   data: PublicInvoiceType[];
 }
-
-type SortKey = "invoice" | "tanggal_service";
-type SortDir = "asc" | "desc";
 
 function toYMD(d: string | Date | undefined | null): string {
   if (!d) return "";
@@ -49,7 +41,7 @@ function toYMD(d: string | Date | undefined | null): string {
   return "";
 }
 
-export function statusBadgeClass(status: string) {
+function statusBadgeClass(status: string) {
   switch (status) {
     case "Paid":
       return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200";
@@ -60,7 +52,7 @@ export function statusBadgeClass(status: string) {
   }
 }
 
-export function statusDotClass(status: string) {
+function statusDotClass(status: string) {
   switch (status) {
     case "Paid":
       return "bg-emerald-500";
@@ -90,8 +82,8 @@ export default function ListInvoiceTable({ data }: iAppProps) {
       const matchesQuery =
         !q ||
         (row.driverName ?? "").toLowerCase().includes(q) ||
-        (row.status ?? "").toLowerCase().includes(q) ||
-        (row.invoiceNumber ?? "").toLowerCase().includes(q);
+        (row.status ?? "").toLowerCase().includes(q);
+      // (row.invoiceNumber ?? "").toLowerCase().includes(q);
 
       const matchesStatus = !status || row.status === status;
       return matchesQuery && matchesStatus;
@@ -100,10 +92,10 @@ export default function ListInvoiceTable({ data }: iAppProps) {
     rows.sort((a, b) => {
       const dir = sortDir === "asc" ? 1 : -1;
 
-      if (sortKey === "invoice")
-        return (
-          (a.invoiceNumber ?? "").localeCompare(b.invoiceNumber ?? "") * dir
-        );
+      // if (sortKey === "invoice")
+      //   return (
+      //     (a.invoiceNumber ?? "").localeCompare(b.invoiceNumber ?? "") * dir
+      //   );
 
       if (sortKey === "tanggal_service")
         return toYMD(a.serviceDate).localeCompare(toYMD(b.serviceDate)) * dir;
@@ -180,13 +172,13 @@ export default function ListInvoiceTable({ data }: iAppProps) {
           <TableCaption>Monitoring Service Truck</TableCaption>
           <TableHeader>
             <TableRow>
-              <ThSort
+              {/* <ThSort
                 active={sortKey === "invoice"}
                 dir={sortKey === "invoice" ? sortDir : undefined}
                 onClick={() => toggleSort("invoice")}
               >
                 Invoice
-              </ThSort>
+              </ThSort> */}
               <TableHead>Nama Petugas</TableHead>
               <TableHead>Status</TableHead>
               <ThSort
@@ -220,8 +212,8 @@ export default function ListInvoiceTable({ data }: iAppProps) {
               </TableRow>
             ) : (
               filteredSorted.map((r) => (
-                <TableRow key={r.invoiceNumber} className="hover:bg-muted/30">
-                  <TableCell className="font-mono">{r.invoiceNumber}</TableCell>
+                <TableRow key={r.driverName} className="hover:bg-muted/30">
+                  {/* <TableCell className="font-mono">{r.invoiceNumber}</TableCell> */}
                   <TableCell>{r.driverName}</TableCell>
                   <TableCell>
                     <div>
@@ -249,11 +241,11 @@ export default function ListInvoiceTable({ data }: iAppProps) {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() =>
-                        alert(
-                          `Invoice ${r.invoiceNumber} — buka halaman detail di sini`
-                        )
-                      }
+                      // onClick={() =>
+                      //   alert(
+                      //     `Invoice ${r.invoiceNumber} — buka halaman detail di sini`
+                      //   )
+                      // }
                     >
                       Lihat
                     </Button>
@@ -265,34 +257,5 @@ export default function ListInvoiceTable({ data }: iAppProps) {
         </Table>
       </div>
     </div>
-  );
-}
-
-function ThSort({
-  children,
-  active,
-  dir,
-  onClick,
-  className = "",
-}: {
-  children: React.ReactNode;
-  active?: boolean;
-  dir?: SortDir;
-  onClick: () => void;
-  className?: string;
-}) {
-  const Icon = !active ? ArrowUpDown : dir === "asc" ? ArrowUp : ArrowDown;
-  return (
-    <TableHead className={`whitespace-nowrap ${className}`}>
-      <Button
-        variant="ghost"
-        className="px-0 font-normal hover:bg-transparent"
-        onClick={onClick}
-        title="Klik untuk urutkan"
-      >
-        <span className="mr-2">{children}</span>
-        <Icon className="h-4 w-4" />
-      </Button>
-    </TableHead>
   );
 }
