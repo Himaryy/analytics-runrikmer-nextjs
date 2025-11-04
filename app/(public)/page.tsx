@@ -12,16 +12,21 @@ import { Tabs } from "@radix-ui/react-tabs";
 import { AddInvoiceStructure } from "./_component/AddInvoiceStructure";
 import ListInvoiceTable from "./_component/ListInvoiceTable";
 import ListOverdueTable from "./_component/ListOverdueTable";
-import { fetchAllInvoices, fetchAllPengecekanMandiri } from "./actions";
+import { fetchAllPengecekanMandiri } from "./actions";
 import {
   TabsHistoryPengecekanMandiri,
   TabsInputData,
 } from "./_component/TabsPengecekanMandiri";
 import { ClipboardList } from "lucide-react";
+import { GetParameters } from "../data/get-parameter";
+import { GetInvoices } from "../data/get-invoices-data";
+import { GetOverdue } from "../data/get-overdue";
 
 export default async function HomePage() {
-  const allInvoices = await fetchAllInvoices();
+  const allInvoices = await GetInvoices();
   const allDataPengecekanMandiri = await fetchAllPengecekanMandiri();
+  // const allParameterKendaraan = await GetParameters();
+  // const overdueParameters = await GetOverdue();
 
   const tabs = [
     { value: "add-invoice", label: "Input Invoice" },

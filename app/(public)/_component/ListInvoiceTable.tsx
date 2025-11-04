@@ -2,7 +2,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, RotateCcw } from "lucide-react";
+import {
+  Search,
+  RotateCcw,
+  MoreVertical,
+  Pencil,
+  EyeIcon,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,21 +31,18 @@ import {
 import { cn } from "@/lib/utils";
 import { PublicInvoiceType } from "@/app/data/get-invoices-data";
 import { SortDir, SortKey, ThSort } from "@/components/sortTable";
+import { formatDateID } from "@/lib/formatValue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 interface iAppProps {
   data: PublicInvoiceType[];
-}
-
-function toYMD(d: string | Date | undefined | null): string {
-  if (!d) return "";
-  if (typeof d === "string") {
-    // Kalo string ISO "2025-10-21T..." → ambil 10
-    return d.length >= 10 ? d.slice(0, 10) : d;
-  }
-  if (d instanceof Date) {
-    return d.toISOString().slice(0, 10);
-  }
-  return "";
 }
 
 function statusBadgeClass(status: string) {
@@ -69,11 +73,11 @@ export default function ListInvoiceTable({ data }: iAppProps) {
   const [sortKey, setSortKey] = useState<SortKey>("tanggal_service");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
-  const statusOptions = useMemo(() => {
-    const set = new Set<string>();
-    (data ?? []).forEach((r) => r.status && set.add(r.status));
-    return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [data]);
+  // const statusOptions = useMemo(() => {
+  //   const set = new Set<string>();
+  //   (data ?? []).forEach((r) => r.status && set.add(r.status));
+  //   return Array.from(set).sort((a, b) => a.localeCompare(b));
+  // }, [data]);
 
   const filteredSorted = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -82,29 +86,32 @@ export default function ListInvoiceTable({ data }: iAppProps) {
       const matchesQuery =
         !q ||
         (row.driverName ?? "").toLowerCase().includes(q) ||
-        (row.status ?? "").toLowerCase().includes(q);
-      // (row.invoiceNumber ?? "").toLowerCase().includes(q);
+        // (row.status ?? "").toLowerCase().includes(q) ||
+        (row.idInvoice ?? "").toLowerCase().includes(q);
 
-      const matchesStatus = !status || row.status === status;
-      return matchesQuery && matchesStatus;
+      // const matchesStatus = !status || row.status === status;
+      // return matchesQuery && matchesStatus;
+      return matchesQuery;
     });
 
     rows.sort((a, b) => {
       const dir = sortDir === "asc" ? 1 : -1;
 
-      // if (sortKey === "invoice")
-      //   return (
-      //     (a.invoiceNumber ?? "").localeCompare(b.invoiceNumber ?? "") * dir
-      //   );
+      if (sortKey === "invoice")
+        return (a.idInvoice ?? "").localeCompare(b.idInvoice ?? "") * dir;
 
       if (sortKey === "tanggal_service")
-        return toYMD(a.serviceDate).localeCompare(toYMD(b.serviceDate)) * dir;
+        return (
+          formatDateID(a.serviceDate).localeCompare(
+            formatDateID(b.serviceDate)
+          ) * dir
+        );
 
       return 0;
     });
 
     return rows;
-  }, [data, query, status, sortKey, sortDir]);
+  }, [data, query, sortKey, sortDir]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -127,7 +134,7 @@ export default function ListInvoiceTable({ data }: iAppProps) {
   return (
     <div className="container mx-auto p-6">
       <div className="flex flex-wrap items-end gap-3 mb-4">
-        <div className="w-48">
+        {/* <div className="w-48">
           <label className="text-xs text-muted-foreground block mb-1">
             Filter Status
           </label>
@@ -143,7 +150,7 @@ export default function ListInvoiceTable({ data }: iAppProps) {
               ))}
             </SelectContent>
           </Select>
-        </div>
+        </div> */}
 
         <div className="flex-1 min-w-[220px]">
           <label className="text-xs text-muted-foreground block mb-1">
@@ -161,7 +168,27 @@ export default function ListInvoiceTable({ data }: iAppProps) {
           </div>
         </div>
 
-        <Button onClick={resetFilters} variant="secondary">
+        <Button
+          onClick={resetFilters}
+          className="
+    bg-green-600/15              /* default background */
+    text-green-700               /* default text color */
+    border border-green-600/30  
+    dark:bg-green-400/20
+    dark:text-white
+    dark:border-green-400/30
+
+    hover:bg-green-600/25        /* stronger green on hover */
+    dark:hover:bg-green-400/30
+
+    focus-visible:outline-none
+    focus-visible:ring-2
+    focus-visible:ring-green-600/40
+    dark:focus-visible:ring-green-400/40
+
+    transition-colors
+  "
+        >
           <RotateCcw className="mr-2 h-4 w-4" />
           Reset
         </Button>
@@ -169,18 +196,17 @@ export default function ListInvoiceTable({ data }: iAppProps) {
 
       <div className="rounded-xl border bg-card">
         <Table>
-          <TableCaption>Monitoring Service Truck</TableCaption>
           <TableHeader>
             <TableRow>
-              {/* <ThSort
+              <ThSort
                 active={sortKey === "invoice"}
                 dir={sortKey === "invoice" ? sortDir : undefined}
                 onClick={() => toggleSort("invoice")}
               >
                 Invoice
-              </ThSort> */}
+              </ThSort>
               <TableHead>Nama Petugas</TableHead>
-              <TableHead>Status</TableHead>
+              {/* <TableHead>Status</TableHead> */}
               <ThSort
                 active={sortKey === "tanggal_service"}
                 dir={sortKey === "tanggal_service" ? sortDir : undefined}
@@ -188,15 +214,10 @@ export default function ListInvoiceTable({ data }: iAppProps) {
               >
                 Tanggal Service
               </ThSort>
-              {/* <ThSort
-                active={sortKey === "total_harga"}
-                dir={sortKey === "total_harga" ? sortDir : undefined}
-                onClick={() => toggleSort("total_harga")}
-                className="hidden md:table-cell"
-              >
-                Total Harga
-              </ThSort> */}
-              <TableHead className="hidden md:table-cell">Action</TableHead>
+              <TableHead>Odometer</TableHead>
+              <TableHead>Keterangan</TableHead>
+
+              <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -212,10 +233,10 @@ export default function ListInvoiceTable({ data }: iAppProps) {
               </TableRow>
             ) : (
               filteredSorted.map((r) => (
-                <TableRow key={r.driverName} className="hover:bg-muted/30">
-                  {/* <TableCell className="font-mono">{r.invoiceNumber}</TableCell> */}
+                <TableRow key={r.idInvoice} className="hover:bg-muted/30">
+                  <TableCell className="font-mono">{r.idInvoice}</TableCell>
                   <TableCell>{r.driverName}</TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <div>
                       <span
                         className={cn(
@@ -232,23 +253,84 @@ export default function ListInvoiceTable({ data }: iAppProps) {
                         {r.status}
                       </span>
                     </div>
-                  </TableCell>
-                  <TableCell>{toYMD(r.serviceDate)}</TableCell>
+                  </TableCell> */}
+                  <TableCell>{formatDateID(r.serviceDate)}</TableCell>
+                  <TableCell>{r.odometerKm}</TableCell>
+                  <TableCell>{r.keterangan}</TableCell>
                   {/* <TableCell className="hidden md:table-cell font-medium">
                     {formatRupiah(r.total_harga)}
                   </TableCell> */}
-                  <TableCell className="hidden md:table-cell">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      // onClick={() =>
-                      //   alert(
-                      //     `Invoice ${r.invoiceNumber} — buka halaman detail di sini`
-                      //   )
-                      // }
-                    >
-                      Lihat
-                    </Button>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="
+        bg-green-600/15
+        text-green-700
+        border border-green-600/30
+        dark:bg-green-400/20
+        dark:text-white
+        dark:border-green-400/30
+
+        hover:bg-green-600/25
+        dark:hover:bg-green-400/30
+
+        focus-visible:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-green-600/40
+        dark:focus-visible:ring-green-400/40
+
+        transition-colors
+      "
+                        >
+                          <MoreVertical className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent
+                        align="end"
+                        className="
+      w-48 rounded-md border
+      bg-card shadow-md
+      transition-all
+    "
+                      >
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href={`/detail/${r.idFaktur}`}
+                            className="
+          flex gap-2 items-center
+          hover:bg-green-600/10
+          dark:hover:bg-green-400/10
+          cursor-pointer px-2 py-2 rounded-sm
+        "
+                          >
+                            <EyeIcon className="size-4" />
+                            Lihat Detail
+                          </Link>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem asChild>
+                          <div
+                            className="
+          flex gap-2 items-center
+          text-red-600
+          hover:bg-red-600/10
+          dark:text-red-400
+          dark:hover:bg-red-400/10
+          cursor-pointer px-2 py-2 rounded-sm
+        "
+                          >
+                            <Trash2 className="size-4" />
+                            Delete Invoice
+                          </div>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))

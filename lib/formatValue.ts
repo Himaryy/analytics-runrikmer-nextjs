@@ -7,12 +7,14 @@ export function formatRupiah(value: number) {
   }).format(value);
 }
 
-export function formatDateID(yyyyMmDd: string) {
-  const [y, m, d] = yyyyMmDd.split("-").map(Number);
-  const dt = new Date(y, (m ?? 1) - 1, d ?? 1);
+export function formatDateID(date: string | Date | null | undefined) {
+  if (!date) return "-";
+
+  const dt = typeof date === "string" ? new Date(date) : date;
+
   return new Intl.DateTimeFormat("id-ID", {
     day: "2-digit",
-    month: "short",
+    month: "short", // kalau mau full -> "long"
     year: "numeric",
   }).format(dt);
 }

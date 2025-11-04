@@ -74,12 +74,12 @@ export function AddInvoiceStructure() {
                 <FormField
                   // @ts-expect-error schema coercion type
                   control={form.control}
-                  name="locationService"
+                  name="driverName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nama Tempat Service</FormLabel>
+                      <FormLabel>Nama Driver</FormLabel>
                       <FormControl>
-                        <Input placeholder="Bengkel..." {...field} />
+                        <Input placeholder="John Doe" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -107,12 +107,12 @@ export function AddInvoiceStructure() {
                 <FormField
                   // @ts-expect-error schema coercion type
                   control={form.control}
-                  name="driverName"
+                  name="locationService"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nama Driver</FormLabel>
+                      <FormLabel>Lokasi Service</FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} />
+                        <Input placeholder="Jl. Ujung Berung" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
